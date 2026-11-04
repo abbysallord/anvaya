@@ -10,18 +10,22 @@ const nextConfig: NextConfig = {
   turbopack: { root: process.cwd() },
   outputFileTracingRoot: process.cwd(),
   async rewrites() {
-    return [
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'shenoy.anvaya.agency',
-          },
-        ],
-        destination: 'https://misaccused-walker-invigoratively.ngrok-free.dev/:path*',
-      },
-    ];
+    return {
+      beforeFiles: [
+        {
+          source: '/:path*',
+          has: [
+            {
+              type: 'host',
+              value: 'shenoy.anvaya.agency',
+            },
+          ],
+          destination: 'https://misaccused-walker-invigoratively.ngrok-free.dev/:path*',
+        },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
   },
   ...(pages && {
     output: "export",
