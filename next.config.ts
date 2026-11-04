@@ -9,24 +9,6 @@ const basePath = pages ? process.env.PAGES_BASE_PATH ?? "/anvaya" : "";
 const nextConfig: NextConfig = {
   turbopack: { root: process.cwd() },
   outputFileTracingRoot: process.cwd(),
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/:path*',
-          has: [
-            {
-              type: 'host',
-              value: 'shenoy.anvaya.agency',
-            },
-          ],
-          destination: 'https://misaccused-walker-invigoratively.ngrok-free.dev/:path*',
-        },
-      ],
-      afterFiles: [],
-      fallback: [],
-    };
-  },
   ...(pages && {
     output: "export",
     basePath,
