@@ -11,7 +11,7 @@ function Screen({ index }: { index: number }) {
     <p className="ps-title">Scan to walk through the 3BHK</p>
   </div>;
   if (index === 1) return <div className="ps ps-walk">
-    <img src="/work/westroad/still-living.webp" alt="" loading="lazy" decoding="async" />
+    <img src="/work/devices/3bhk/living-wide.webp" alt="" loading="lazy" decoding="async" />
     <div className="ps-chips"><span data-on="true">Living</span><span>Dining</span><span>Bedroom</span></div>
   </div>;
   if (index === 2) return <div className="ps ps-ask">
