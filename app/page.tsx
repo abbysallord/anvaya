@@ -1,49 +1,59 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Hero } from "./components/cinema/Hero";
-import { ServiceDial } from "./components/cinema/ServiceDial";
-import { Action, Faq, FinalCTA, PricingPlans, ProofSection, StepList } from "./components/cinema/Shared";
-import { foundingOffer, processSteps, proof } from "./lib/site";
+import { Showcase } from "./components/site/Showcase";
+import { Journey } from "./components/site/Journey";
+import { Bundles } from "./components/site/Bundles";
+import { ArrowUpRight } from "./components/site/icons";
+import { Faq, FinalCTA } from "./components/cinema/Shared";
+import { practices } from "./lib/site";
 
-// Review stats appear only once genuine reviews or testimonials exist; zero counts read as "nobody hires them".
-const hasProof = proof.reviews > 0 || proof.testimonials > 0;
+export const metadata: Metadata = {
+  title: { absolute: "Anvaya — Launch kits for real estate developers and growing businesses" },
+  description: "Anvaya builds end-to-end launch kits: 360° walkthroughs, project websites and WhatsApp follow-up for real estate developers, and website-plus-booking bundles for clinics, schools and shops.",
+  alternates: { canonical: "/" },
+};
 
-// Every answer restates the owner's published copy; nothing here adds new commitments.
+// Every answer restates the published bundles and terms; nothing here adds a new commitment.
 const questions = [
-  ["Which services are available now?", <p key="a">Websites & Branding and 3D Renders & Walkthroughs are open for new projects. Apps & Software and AI & Automation are coming soon.</p>],
-  ["Do I need a detailed brief?", <p key="a">No. A few lines about what you need is enough. We will ask the right questions after that.</p>],
-  ["Can I get more than one service?", <p key="a">Yes. Pick one service, or several — for example a website plus 3D renders. One team handles it all.</p>],
-  ["How many review rounds are included?", <p key="a">Two rounds of changes are included. Extra rounds are ₹1,999 each, so there are no surprise charges. See <Link href="/pricing">pricing</Link>.</p>],
-  ["How do payments work?", <p key="a">50% advance to start and the balance before final files, by UPI or bank transfer. Previews carry a watermark until paid. The full details are in the <Link href="/terms">project terms</Link>.</p>],
-  ["What happens after I send an enquiry?", <p key="a">We read your message, then reply with a clear next step — questions, a suggested plan or a price range. No generic sales script.</p>],
-  ["Where is the studio based?", <p key="a">Anvaya is based in India and works with clients in India and around the world.</p>],
+  ["What is a launch kit?", <p key="a">One package for one residential launch: a 360° walkthrough of the flat, a project website and WhatsApp follow-up for every enquiry. One team builds all three, so they work together from day one.</p>],
+  ["We only have floor plans. Is that enough?", <p key="a">Yes. Send the approved floor plan and any elevation or finish references you have. We model, furnish and light the flat from that, and you review it twice before it goes live.</p>],
+  ["How long does it take?", <p key="a">Launch Essential is delivered in 10 working days and Launch Pro in 15. Larger projects are scheduled with you before work starts.</p>],
+  ["How do payments work?", <p key="a">50% advance to start and the balance before final files, by international bank transfer (UPI or bank transfer in India). Prices are in US dollars; quotes are also available in EUR, GBP, AED or INR. Previews carry a watermark until paid. The full details are in the <Link href="/terms">project terms</Link>.</p>],
+  ["Do you work with businesses outside real estate?", <p key="a">Yes. Get Found and Get Booked are bundles for clinics, schools, studios and shops: a fast website, a tuned Google profile and WhatsApp replies and booking. See <Link href="/pricing#businesses">growth bundles</Link>.</p>],
+  ["Do you work with clients outside India?", <p key="a">Yes. We work remotely with developers, designers and brokers worldwide, in English, across time zones. Floor plans in PDF, DWG or image form are fine, in metres or feet.</p>],
+  ["Will our plans stay confidential?", <p key="a">Yes. Your plans and renders are never shown to anyone without your written permission, and we sign an NDA on request at no cost.</p>],
 ] as const;
 
 export default function Home() {
+  const open = practices.filter(p => !p.comingSoon);
   return <main id="main-content" tabIndex={-1}>
     <Hero />
-    <section className="section build-section" id="what-we-build"><div className="wrap">
-      <div className="section-heading"><h2>What we <em>do.</em></h2><p>Four services, one team. Pick what you need — from a new website to a 3D walkthrough of your next project.</p></div>
-      <ServiceDial />
-      <div className="cta-band"><p>Need more than one? We can combine them into a single project.</p><Action href="/project" light>Start a Project</Action></div>
+    <Showcase number="01" />
+
+    <section className="caps" id="what-we-build" aria-labelledby="caps-title"><div className="shell">
+      <div className="caps-head">
+        <p className="label"><b>02</b> / What we do</p>
+        <h2 id="caps-title" className="display">Three crafts, <em>one team.</em></h2>
+        <p className="lede">We build websites, WhatsApp automation and 3D walkthroughs, and sell them together as bundles so they work as one system.</p>
+      </div>
+      <ul className="caps-list" data-stagger="80">
+        {open.map((p, i) => <li key={p.id}><Link href={`/services/${p.slug}`} className="caps-row">
+          <span className="caps-index">{String(i + 1).padStart(2, "0")}</span>
+          <span className="caps-name">{p.name}</span>
+          <span className="caps-line">{p.line}</span>
+          <ArrowUpRight />
+        </Link></li>)}
+      </ul>
     </div></section>
-    <section className="section process-section" id="process"><div className="wrap">
-      <div className="section-heading process-intro"><h2>How we <em>work.</em></h2><p>Every project is different. Our process stays simple and clear.</p></div>
-      <StepList steps={processSteps} />
-      <p className="process-closing">No jargon. No surprises. Just steady progress you can see.</p>
+
+    <Journey />
+    <Bundles number="04" />
+
+    <section className="section faq-section" id="faq"><div className="shell">
+      <div className="faq-layout"><div><p className="label"><b>05</b> / Questions</p><h2 className="display">Before you <em>start.</em></h2></div><Faq items={questions} /></div>
     </div></section>
-    <section className="section pricing-section" id="pricing"><div className="wrap">
-      <div className="section-heading"><h2>Clear prices. <em>No surprises.</em></h2><p>One price per floorplan, a set delivery time and two rounds of changes. Add-ons and launch services are on the <Link href="/pricing">pricing page</Link>.</p></div>
-      <PricingPlans />
-    </div></section>
-    <section className="section proof-section" id="reviews"><div className="wrap">
-      {hasProof
-        ? <div className="section-heading"><h2>What clients <em>say.</em></h2><p>We publish only genuine reviews from completed projects.</p></div>
-        : <div className="section-heading"><h2>Our first <em>clients.</em></h2><p>We publish only genuine reviews from completed projects, so this space waits for our first builders. The first {foundingOffer.slots} get founding prices in return for a short testimonial.</p></div>}
-      {hasProof ? <ProofSection /> : <Action href="/pricing">See the founding offer</Action>}
-    </div></section>
-    <section className="section faq-section" id="faq"><div className="wrap">
-      <div className="faq-layout"><h2>Before you <em>start.</em></h2><Faq items={questions} /></div>
-    </div></section>
-    <FinalCTA body="A new website, an app idea, a task to automate or a building to visualise — tell us what you need and we will reply with a clear next step." direct />
+
+    <FinalCTA heading="Have a launch coming up?" body="Send us a floor plan or a few lines about your business. We reply with the bundle that fits, a price and a date." action="Start a project" direct />
   </main>;
 }

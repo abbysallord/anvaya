@@ -4,6 +4,19 @@ Technology and design studio. India, working globally.
 
 The site implements the owner's complete website script with warm ivory/espresso/terracotta styling, an original architectural Three.js hero, one continuous thread motif, an editorial GSAP/Lenis motion layer and eight core pages. Since 23 October 2026 the visual system follows the West Road residence walkthrough: ink, ivory and a warm accent; Instrument Serif, Inter Tight and JetBrains Mono; glass pills, a numbered section rail and a depth ruler. Branch `redesign/cinematic-studio`; the previous ivory/espresso design is commit `02d2290`. [DESIGN.md](DESIGN.md) and the [implementation contract](docs/anvaya-connected-studio-plan.md) are the current authority. Earlier Lusion/lotus components are historical and are not imported by active pages.
 
+## Bundles redesign (branch `redesign/launch-kit-home`, 16 November 2026)
+
+The site now sells end-to-end bundles (launch kits for real estate developers, growth bundles for businesses) instead of a list of services. Owner sign-off is still needed: this branch overrides several DESIGN.md decisions (palette, hero, no raster images, home order).
+
+- **Design system:** `app/system.css`. Token names and scales follow Meta's Astryx design system (MIT); the values are Anvaya's own warm-stone and ink theme taken from the West Road renders. `cinema.css` and `light.css` still load underneath, with their tokens remapped.
+- **Motion:** anime.js v4 (`app/components/site/Motion.tsx`): scroll reveals, split headings, scroll-linked sequences, the pinned work reel, route veil and magnetic buttons. Lenis smooths mouse-wheel scrolling only. Reduced motion turns all of it off; content never depends on it.
+- **Home:** live 360° view of the delivered flat (`PanoHero`, Three.js, poster fallback), work reel, buyer-journey demo, bundles, capabilities, FAQ.
+- **Phones:** a different layout, not a squeezed one: bottom dock navigation, the 360° view as a window with the copy below it, swipe rows for work, journey and bundles, and the assistant as a bottom sheet.
+- **Assistant:** "Ask Anvaya" (`app/assistant/actions.ts`, server action). Answers only from `app/lib/knowledge.ts`, generated from the same data the pages render. Needs `ANTHROPIC_API_KEY`; without it the widget shows hand-off links. Default model `claude-opus-5-5`, override with `ANVAYA_ASSISTANT_MODEL`.
+- **SEO:** canonical URLs, `ProfessionalService` + `OfferCatalog` JSON-LD, AI search crawlers allowed in robots, sitemap without redirects or unavailable services. Set `NEXT_PUBLIC_SITE_URL` in Vercel.
+- **Images:** `scripts/westroad-stills.py` makes the hero posters, stills and web panoramas in `public/work/westroad/` from the tour's panoramas (about 830 KB in total).
+- **Tests:** `tests/site.spec.ts` covers the new site. The specs for the previous design are kept, unrun, in `tests/legacy/`.
+
 ## Run locally
 
 Use Node 22 LTS with the committed lockfile:

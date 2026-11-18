@@ -15,5 +15,5 @@ export default defineConfig({
     { name: "webkit-desktop", use: { ...devices["Desktop Safari"], viewport: { width: 1440, height: 1000 } } },
     { name: "webkit-mobile", use: { ...devices["iPhone 13"], defaultBrowserType: "webkit" } },
   ],
-  webServer: { command: "npm run start -- --hostname 127.0.0.1 --port 3107", url: "http://127.0.0.1:3107", reuseExistingServer: false, timeout: 60_000, env: { RESEND_API_KEY: "", PROJECT_ENQUIRY_FROM: "", PROJECT_ENQUIRY_TO: "" } },
+  webServer: { command: "npm run start -- --hostname 127.0.0.1 --port 3107", url: "http://127.0.0.1:3107", reuseExistingServer: false, timeout: 60_000, env: { RESEND_API_KEY: "", PROJECT_ENQUIRY_FROM: "", PROJECT_ENQUIRY_TO: "", ANTHROPIC_API_KEY: "" } },
 });

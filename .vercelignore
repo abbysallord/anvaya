@@ -1,0 +1,8 @@
+# Local tool data and internal notes: not needed to build the site.
+.ua
+.claude-flow
+.claude
+tests
+test-results
+playwright-report
+ANVAYA_MIROFISH_CATALOGUE_PIPELINE.md

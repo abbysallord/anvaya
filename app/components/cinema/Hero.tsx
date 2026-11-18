@@ -3,21 +3,10 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState, type CSSProperties } from "react";
 import { contact } from "../../lib/site";
-import { afterIntro } from "../../lib/motion";
+import { afterOpening } from "../../lib/anim";
 const Scene = dynamic(() => import("./PetalScene"), { ssr: false });
-const clock = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: false });
-
-/** Studio time in India; server-rendered as a placeholder so hydration never mismatches. */
-export function StudioClock({ className = "hero-clock" }: { className?: string }) {
-  const [time, setTime] = useState("");
-  useEffect(() => {
-    const tick = () => setTime(clock.format(new Date()));
-    tick();
-    const id = setInterval(tick, 15000);
-    return () => clearInterval(id);
-  }, []);
-  return <p className={className}>IST <time>{time || "--:--"}</time></p>;
-}
+export { StudioClock } from "./StudioClock";
+import { StudioClock } from "./StudioClock";
 
 function CopyEmail({ email }: { email: string }) {
   const [copied, setCopied] = useState(false);
@@ -35,7 +24,7 @@ export function Hero() {
     // The glass scene waits for the opening to release the page and for an idle moment, so its WebGL setup never
     // competes with the intro or the headline entrance. The CSS fan holds the stage and crossfades to it.
     let idle = 0;
-    const stop = afterIntro(location.pathname, () => {
+    const stop = afterOpening(() => {
       const begin = () => { update(); preference.addEventListener("change", update); };
       idle = "requestIdleCallback" in window ? requestIdleCallback(begin, { timeout: 1500 }) : -setTimeout(begin, 600);
     });
@@ -50,7 +39,7 @@ export function Hero() {
       {live && <Scene />}
     </div>
     <div className="hero-center">
-      <h1 id="hero-title"><span className="hero-line"><span>Ambitious ideas.</span></span> <span className="hero-line hero-mark"><i className="hero-mark-box" aria-hidden="true" /><span>Built to last.</span></span></h1>
+      <h1 id="hero-title" data-nosplit aria-label="Ambitious ideas. Built to last."><span className="hero-line"><span>Ambitious ideas.</span></span> <span className="hero-line hero-mark"><i className="hero-mark-box" aria-hidden="true" /><span>Built to last.</span></span></h1>
       <p className="hero-lede-top">We build websites, apps, AI automation and 3D renders for businesses in India and around the world.</p>
       <div className="hero-actions"><Link className="action action-light" href="/project"><span>Start a Project</span><span className="action-arrow" aria-hidden="true">↗</span></Link><Link className="action" href="#what-we-build"><span>Explore what we build</span><span aria-hidden="true">↓</span></Link></div>
     </div>

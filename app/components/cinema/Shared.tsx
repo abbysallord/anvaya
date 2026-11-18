@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { addOns, contact, foundingOffer, plans, practices, proof, quoted, socialIcons, terms } from "../../lib/site";
-import { StudioClock } from "./Hero";
+import { Money } from "../site/Currency";
+import { StudioClock } from "./StudioClock";
 
 export function Action({ href = "/project", children = "Start a Project", light = false, text = false }: { href?: string; children?: ReactNode; light?: boolean; text?: boolean }) {
   return <Link href={href} className={`action${light ? " action-light" : ""}${text ? " action-text" : ""}`}><span>{children}</span><span className="action-arrow" aria-hidden="true">↗</span></Link>;
@@ -42,50 +43,49 @@ export function Footer() {
       <div className="footer-grid">
         <div className="footer-intro">
           <p className="footer-heading">© 2026 Anvaya Digital Studio</p>
-          <div className="social-row">{socialIcons.map(s => <SocialIcon key={s.name} name={s.name} href={s.href} />)}</div>
-          <p className="footer-note">A technology and design studio. <b>Ambitious ideas, built to last.</b></p>
+          {socialIcons.some(s => s.href) && <div className="social-row">{socialIcons.filter(s => s.href).map(s => <SocialIcon key={s.name} name={s.name} href={s.href} />)}</div>}
+          <p className="footer-note">A technology and design studio. <b>Launch kits, built end to end.</b></p>
           <address className="footer-note"><b>India</b> · Working globally · <StudioClock className="footer-clock" /></address>
-          <p className="footer-note"><Link href="/privacy">Privacy</Link> · <Link href="/terms">Terms</Link> · <Link href="/project">Start a Project</Link></p>
+          <p className="footer-note"><Link href="/privacy">Privacy</Link> · <Link href="/terms">Terms</Link> · <Link href="/credits">Licences and credits</Link> · <Link href="/project">Start a Project</Link></p>
         </div>
-        <nav aria-label="Footer navigation"><p className="footer-heading">Explore</p><Link href="/work">Works</Link><Link href="/services">Services</Link><Link href="/pricing">Pricing</Link><Link href="/blog">Blog</Link><Link href="/studio">Studio</Link></nav>
-        <nav aria-label="Footer services"><p className="footer-heading">Services</p>{practices.map(p => <Link key={p.id} href={`/services/${p.slug}`}>{p.name}</Link>)}</nav>
+        <nav aria-label="Footer navigation"><p className="footer-heading">Explore</p><Link href="/work">Work</Link><Link href="/gallery">Gallery</Link><Link href="/pricing">Pricing</Link><Link href="/services">Capabilities</Link><Link href="/studio">Studio</Link><Link href="/blog">News</Link><Link href="/project">Start a project</Link></nav>
+        <nav aria-label="Footer capabilities"><p className="footer-heading">Capabilities</p>{practices.filter(p => !p.comingSoon).map(p => <Link key={p.id} href={`/services/${p.slug}`}>{p.name}</Link>)}</nav>
       </div>
       {/* The name, huge and blue, fading into the dark and cut by the panel's bottom edge. */}
       <Link href="/" className="footer-wordmark" aria-label="Anvaya home" tabIndex={-1}><span className="footer-word">Anvaya</span></Link>
     </div>
   </div></footer>;
 }
-/** Practical pricing: the founding-offer banner, three packages per unit type with regular prices struck through,
-    a link on to the full catalog (add-ons and launch services), then the shared terms. */
-export function PricingPlans({ catalogHref = "/pricing#add-ons" }: { catalogHref?: string }) {
+/** Individual 3D items for teams that need one piece rather than a bundle: one published price each. */
+export function PricingPlans() {
   return <>
-    <div className="offer-banner" role="note"><b>{foundingOffer.title}</b><span>{foundingOffer.detail}</span></div>
-    {/* The middle plan is set on the dark navy panel for rhythm only; it carries no "popular" claim. */}
-    <div className="plan-grid">{plans.map(plan => <article className={`plan-card${plan.available ? "" : " is-soon"}${plan.id === "tour" ? " is-featured" : ""}`} key={plan.id}>
-      <p className="plan-practice">{plan.practice}{!plan.available && <> <ComingSoon /></>}</p>
+    <div className="plan-grid">{plans.map(plan => <article className="plan-card" key={plan.id}>
+      <p className="plan-practice">{plan.practice}</p>
       <h3>{plan.name}</h3>
       <div className="plan-price">
-        {plan.prices.map(([label, regular, offer]) => <p className="price-row" key={label}><span className="price-label">{label}</span><s aria-label={`Regular price ${regular}`}>{regular}</s><b>{offer}</b></p>)}
-        <span>{plan.unit}</span>
+        {plan.prices.map(([label, price]) => <p className="price-row" key={label}><span className="price-label">{label}</span><b><Money text={price} /></b></p>)}
+        <span><Money text={plan.unit} /></span>
       </div>
       <dl className="plan-facts"><div><dt>Delivery</dt><dd>{plan.timeline}</dd></div><div><dt>Reviews</dt><dd>{plan.rounds}</dd></div><div><dt>Warranty</dt><dd>14-day defect fixes</dd></div></dl>
       <ul className="plan-includes">{plan.includes.map(item => <li key={item}>{item}</li>)}</ul>
-      {plan.available ? <Action href="/project?service=spatial">Enquire about this</Action> : <Action href="/services" text>See available services</Action>}
+      <Action href="/project?service=spatial">Enquire about this</Action>
     </article>)}</div>
-    <div className="catalog-cta"><p>Add-ons, websites, enquiry follow-up and video ads are in the full catalog.</p><Action href={catalogHref}>Explore the full catalog</Action></div>
-    <dl className="terms-grid">{terms.map(([term, detail]) => <div key={term}><dt>{term}</dt><dd>{detail}</dd></div>)}</dl>
-    <p className="terms-note">Prices are per unit type (one floorplan, such as a 2BHK). Exact deliverables and dates are confirmed in writing before work starts. Full details in the <Link href="/terms">project terms</Link>.</p>
+    <p className="terms-note"><b>{foundingOffer.title}.</b> {foundingOffer.detail} Prices are per unit type (one floorplan, such as a 2BHK). Exact deliverables and dates are confirmed in writing before work starts.</p>
   </>;
+}
+/** Commercial terms as a grid. */
+export function TermsGrid() {
+  return <dl className="terms-grid">{terms.map(([term, detail]) => <div key={term}><dt>{term}</dt><dd>{detail}</dd></div>)}</dl>;
 }
 /** Add-ons to any package, as item / price pairs. */
 export function PricingAddOns() {
-  return <dl className="terms-grid addon-grid">{addOns.map(([item, price]) => <div key={item}><dt>{item}</dt><dd>{price}</dd></div>)}</dl>;
+  return <dl className="terms-grid addon-grid">{addOns.map(([item, price]) => <div key={item}><dt>{item}</dt><dd><Money text={price} /></dd></div>)}</dl>;
 }
 /** Services quoted per project, with starting prices. */
 export function QuotedServices() {
   return <div className="plan-grid quoted-grid">{quoted.map(q => <article className="plan-card is-soon" key={q.name}>
     <h3>{q.name}</h3>
-    <p className="plan-price"><b>{q.price}</b></p>
+    <p className="plan-price"><b><Money text={q.price} /></b></p>
     <p className="quoted-detail">{q.detail}</p>
     <Action href={`/project?service=${q.id}`} text>Ask for a quote</Action>
   </article>)}</div>;
@@ -109,17 +109,17 @@ export function PageHero({ title, children, action, href, practice, comingSoon =
       <div className="page-intro">{children}</div>
       {action && <Action href={href} light>{action}</Action>}
     </div>
-    {practice !== undefined && <p className="page-hero-number" aria-hidden="true"><span>Service</span>{practices[practice].number}<small>/ 04</small></p>}
+    
   </div></section>;
 }
 /** Services: full-frame practice cards that stack as the reader scrolls (CSS sticky; GSAP dims the covered card). */
 export function ServiceBlocks() {
-  return <div className="service-stack">{practices.map((p, index) => <article className="service-block" key={p.id} style={{ "--i": index } as CSSProperties}>
+  return <div className="service-stack">{practices.filter(p => !p.comingSoon).map((p, index) => <article className="service-block" key={p.id} style={{ "--i": index } as CSSProperties}>
     <div className="service-body">
-      <div className="service-head"><span className="service-index" aria-hidden="true">{p.number}</span></div>
+      <div className="service-head"><span className="service-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span></div>
       <div className="service-description"><h3>{p.name}{p.comingSoon && <> <ComingSoon /></>}</h3><p>{p.summary}</p><p className="service-tags">{p.tags}</p><Action href={`/services/${p.slug}`} text>{p.comingSoon ? "Preview" : "Explore"} {p.name}</Action></div>
     </div>
-    <div className="service-mark" aria-hidden="true"><span>{p.number}</span><p>{p.line}</p></div>
+    <div className="service-mark" aria-hidden="true"><span>{String(index + 1).padStart(2, "0")}</span><p>{p.line}</p></div>
     <span className="service-shade" aria-hidden="true" />
   </article>)}</div>;
 }
@@ -130,3 +130,4 @@ export function StepList({ steps }: { steps: readonly (readonly [string, string]
 export function Marquee({ rows }: { rows: readonly (readonly string[])[] }) {
   return <div className="marquee" aria-hidden="true">{rows.map((words, row) => <div className="marquee-track" key={row}>{[0, 1].map(copy => <span key={copy}>{words.map((word, index) => <span className="marquee-item" key={index}>{word}<i className="marquee-bindu" /></span>)}</span>)}</div>)}</div>;
 }
+
