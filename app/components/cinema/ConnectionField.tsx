@@ -2,7 +2,8 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { frameBudget } from "../../lib/frameBudget";
-import { gsap, prefersReducedMotion, ScrollTrigger } from "../../lib/motion";
+import { animate, onScroll, type JSAnimation, type ScrollObserver } from "animejs";
+import { reducedMotion as prefersReducedMotion } from "../../lib/anim";
 
 // Anvaya means connection, so the About hero shows it literally: a field of nodes drifting in two loose clusters
 // (the idea, the result), with a bright hub between them. Any two nodes close enough are joined by a thread that
@@ -208,12 +209,12 @@ export function ConnectionField() {
       point.copy(camera.position).addScaledVector(ray, -camera.position.z / ray.z);
       state.pointer.set(point.x, point.y - state.lift, 0);
     };
-    let trigger: ScrollTrigger | undefined, intro: gsap.core.Tween | undefined, observer: IntersectionObserver | undefined;
+    let trigger: ScrollObserver | undefined, intro: JSAnimation | undefined, observer: IntersectionObserver | undefined;
     let visible = true;
     const update = () => { if (visible && !document.hidden) start(); else stop(); };
     if (!still) {
-      intro = gsap.to(uniforms.uIntro, { value: 1, duration: 2.4, delay: .2, ease: "power3.out" });
-      trigger = ScrollTrigger.create({ trigger: target, start: "top top", end: "bottom top", scrub: .6, onUpdate: self => { state.scatter = self.progress; } });
+      intro = animate(uniforms.uIntro, { value: 1, duration: 2400, delay: 200, ease: "outCubic" });
+      trigger = onScroll({ target, enter: "top top", leave: "top bottom", onUpdate: self => { state.scatter = self.progress; } });
       addEventListener("pointermove", move, { passive: true });
       observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; update(); });
       observer.observe(target);
@@ -224,7 +225,7 @@ export function ConnectionField() {
     function teardown() {
       if (disposed) return;
       disposed = true;
-      stop(); intro?.kill(); trigger?.kill(); observer?.disconnect(); sizes.disconnect();
+      stop(); intro?.revert(); trigger?.revert(); observer?.disconnect(); sizes.disconnect();
       removeEventListener("pointermove", move); document.removeEventListener("visibilitychange", update);
       nodeGeometry.dispose(); nodeMaterial.dispose(); lineGeometry.dispose(); lineMaterial.dispose();
       hubMaterial.map?.dispose(); hubMaterial.dispose();

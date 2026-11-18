@@ -16,7 +16,7 @@ test("server rejects coming-soon practices before contacting the email provider"
   let requests = 0;
   try {
     globalThis.fetch = async () => { requests++; throw new Error("Unexpected provider request"); };
-    for (const service of ["product", "automation"]) {
+    for (const service of ["product"]) {
       const form = validForm(); form.append("services", service);
       const result = await sendEnquiry(initialEnquiryState, form);
       expect(result.status).toBe("error");

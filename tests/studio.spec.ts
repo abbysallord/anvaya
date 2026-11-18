@@ -37,8 +37,8 @@ test("service combinations, route seeds and INR guidance remain consistent", asy
   await expect(service(page, "interface")).not.toBeChecked(); await expect(service(page, "spatial")).not.toBeChecked();
   await cont(page);
   await expect(page.getByRole("radio", { name: "Need guidance" })).toBeChecked();
-  await page.getByRole("radio", { name: /₹50,000–₹1.5 lakh/ }).check({ force: true });
-  await expect(page.getByRole("radio", { name: /₹50,000–₹1.5 lakh/ })).toBeChecked();
+  await page.getByRole("radio", { name: /\$3,000–\$6,000/ }).check({ force: true });
+  await expect(page.getByRole("radio", { name: /\$3,000–\$6,000/ })).toBeChecked();
   await page.goto("/project?service=unrecognised"); await expect(service(page, "unsure")).toBeChecked();
 });
 test("copy and download preserve a local brief without sending", async ({ page }) => {
@@ -53,15 +53,16 @@ test("copy and download preserve a local brief without sending", async ({ page }
   expect((await download).suggestedFilename()).toBe("anvaya-project-brief.txt");
   await expect(page.getByText("Brief downloaded. This does not send an enquiry.")).toBeVisible(); expect(posts).toEqual([]);
 });
-test("coming-soon services cannot be selected, including legacy and named enquiry seeds", async ({ page }) => {
-  for (const seed of ["product", "digital-products", "automation", "intelligent-operations"]) {
+test("unavailable services are not offered, and their enquiry seeds fall back to Not sure yet", async ({ page }) => {
+  for (const seed of ["product", "digital-products"]) {
     await page.goto(`/project?service=${seed}`);
-    await expect(service(page, "product")).toBeDisabled(); await expect(service(page, "automation")).toBeDisabled();
-    await expect(service(page, "product")).not.toBeChecked(); await expect(service(page, "automation")).not.toBeChecked();
+    await expect(service(page, "product")).toHaveCount(0);
     await expect(service(page, "unsure")).toBeChecked();
-    await expect(page.locator("#services-help")).toContainText(`${seed === "product" || seed === "digital-products" ? "Apps & Software" : "AI & Automation"} is coming soon.`);
-    await page.getByRole("checkbox", { name: /Websites & Branding/ }).check({ force: true });
-    await expect(service(page, "interface")).toBeChecked();
+    await expect(page.locator("form")).not.toContainText(/coming soon/i);
+  }
+  for (const seed of ["automation", "intelligent-operations"]) {
+    await page.goto(`/project?service=${seed}`);
+    await expect(service(page, "automation")).toBeChecked();
   }
 });
 test("status pages: unknown URLs show a helpful 404 with working links", async ({ page }) => {
