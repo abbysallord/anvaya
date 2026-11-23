@@ -13,11 +13,14 @@ export function middleware(request: NextRequest) {
     const search = request.nextUrl.search;
     const targetUrl = new URL(`${pathname}${search}`, 'https://misaccused-walker-invigoratively.ngrok-free.dev');
 
-    return NextResponse.rewrite(targetUrl, {
+    const response = NextResponse.rewrite(targetUrl, {
       request: {
         headers: requestHeaders,
       },
     });
+    // The ngrok free tier adds "x-robots-tag: noindex, nofollow"; override it so Google can index the site.
+    response.headers.set('x-robots-tag', 'index, follow');
+    return response;
   }
 
   return NextResponse.next();
