@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { afterIntro } from "../../lib/motion";
+import { afterOpening } from "../../lib/anim";
 
 const Butterfly = dynamic(() => import("./Butterfly"), { ssr: false });
 
@@ -26,7 +26,7 @@ export function ButterflyLayer() {
     // Mount once the opening has finished and the page is idle, so downloading and compiling three.js never
     // competes with the first paint or the headline entrance.
     let idle = 0;
-    const stop = afterIntro(location.pathname, () => {
+    const stop = afterOpening(() => {
       const begin = () => { update(); preference.addEventListener("change", update); };
       idle = "requestIdleCallback" in window ? requestIdleCallback(begin, { timeout: 2500 }) : -setTimeout(begin, 1200);
     });

@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
     env: { NEXT_PUBLIC_BASE_PATH: basePath },
     webpack: config => {
       config.resolve.alias[path.join(process.cwd(), "app/project/actions.ts")] = path.join(process.cwd(), "app/project/actions.static.ts");
+      config.resolve.alias[path.join(process.cwd(), "app/assistant/actions.ts")] = path.join(process.cwd(), "app/assistant/actions.static.ts");
       return config;
     },
   }),

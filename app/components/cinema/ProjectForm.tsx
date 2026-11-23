@@ -3,7 +3,7 @@ import { useActionState, useEffect, useRef, useState, type ChangeEvent, type Key
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { sendEnquiry } from "../../project/actions";
-import { budgetOptions, practices, timelineOptions } from "../../lib/site";
+import { budgetOptions, bundles, practices, timelineOptions } from "../../lib/site";
 import { enquiryText, initialEnquiryState, parseEnquiry, type EnquiryState } from "../../lib/enquiry";
 import { ComingSoon } from "./Shared";
 
@@ -14,15 +14,15 @@ const steps = [
   { title: "Tell us about the project.", hint: "A few lines is enough. We will ask the rest.", label: "The project", fields: ["outcome", "timeline", "budget", "context"] },
   { title: "How can we reach you?", hint: "We reply by email with a clear next step.", label: "Your details", fields: ["name", "company", "email", "phone"] },
 ] as const;
-const starters = ["A new website for my business", "An app for my customers", "Automate WhatsApp replies and follow-ups", "3D renders of a building or interior"];
+const starters = ["A launch kit for a residential project", "A new website for my business", "WhatsApp replies and booking", "3D renders of a building or interior"];
 const MIN_OUTCOME = 10;
 type Values = { name: string; company: string; email: string; phone: string; outcome: string; timeline: string; budget: string; context: string };
 
-export function ProjectForm({ initialService, onRestart }: { initialService?: string; onRestart?: () => void }) {
+export function ProjectForm({ initialService, initialOutcome = "", onRestart }: { initialService?: string; initialOutcome?: string; onRestart?: () => void }) {
   const [state, action, pending] = useActionState(sendEnquiry, initialEnquiryState);
   const initialPractice = practices.find(p => p.id === initialService);
   const [selection, setSelection] = useState<string[]>(initialPractice && !initialPractice.comingSoon ? [initialPractice.id] : ["unsure"]);
-  const [values, setValues] = useState<Values>({ name: "", company: "", email: "", phone: "", outcome: "", timeline: "Not sure yet", budget: "Need guidance", context: "" });
+  const [values, setValues] = useState<Values>({ name: "", company: "", email: "", phone: "", outcome: initialOutcome, timeline: "Not sure yet", budget: "Need guidance", context: "" });
   const [step, setStep] = useState(0);
   const [stepped, setStepped] = useState(false);
   const [local, setLocal] = useState<Record<string, string>>({});
@@ -118,7 +118,7 @@ export function ProjectForm({ initialService, onRestart }: { initialService?: st
       <legend className="form-step-title" ref={step === 0 ? heading : undefined} tabIndex={-1}>{steps[0].title}</legend>
       <p className="form-step-hint">{steps[0].hint}</p>
       <div className="service-choice-grid">
-        {[...practices.map(p => ({ id: p.id as string, name: p.name as string, offer: p.offer as string, comingSoon: p.comingSoon })), { id: "unsure", name: "Not sure yet", offer: "Tell us the problem and we will suggest the right service.", comingSoon: false }].map(p =>
+        {[...practices.filter(p => !p.comingSoon).map(p => ({ id: p.id as string, name: p.name as string, offer: p.offer as string, comingSoon: p.comingSoon })), { id: "unsure", name: "Not sure yet", offer: "Tell us the problem and we will suggest the right service.", comingSoon: false }].map(p =>
           <label className={`service-choice${p.comingSoon ? " is-soon" : ""}`} key={p.id}>
             <input type="checkbox" name="services" value={p.id} disabled={p.comingSoon} checked={selection.includes(p.id)} onChange={() => choose(p.id)} />
             <span className="service-choice-check" aria-hidden="true" />
@@ -126,7 +126,7 @@ export function ProjectForm({ initialService, onRestart }: { initialService?: st
             <span className="service-choice-offer">{p.offer}</span>
           </label>)}
       </div>
-      <p id="services-help" className="practice-help">{initialPractice?.comingSoon ? `${initialPractice.name} is coming soon. Choose an available service, or leave “Not sure yet” selected.` : "Apps & Software and AI & Automation are coming soon."}</p>
+      <p id="services-help" className="practice-help">Pick everything that applies. A bundle usually covers more than one.</p>
       {error("services")}
     </fieldset>
 
@@ -141,7 +141,7 @@ export function ProjectForm({ initialService, onRestart }: { initialService?: st
         {error("outcome")}
       </div>
       <Chips name="timeline" label="When do you want to start?" options={timelineOptions} value={values.timeline} onChange={value => set("timeline", value)} error={error("timeline")} />
-      <Chips name="budget" label="Rough budget" help="In Indian rupees. Choose “Need guidance” if unsure." options={budgetOptions} value={values.budget} onChange={value => set("budget", value)} error={error("budget")} />
+      <Chips name="budget" label="Rough budget" help="In US dollars. Choose “Need guidance” if unsure." options={budgetOptions} value={values.budget} onChange={value => set("budget", value)} error={error("budget")} />
       <div className="form-field full"><label htmlFor="context">Anything else? <span className="optional">Optional</span></label><textarea maxLength={5000} placeholder="Links to your current website, reference designs, deadlines…" {...field("context")} /><small id="context-help">Links, examples or constraints are welcome.</small>{error("context")}</div>
     </fieldset>
 
@@ -200,8 +200,11 @@ function Success({ state, name, email, chosen, onRestart }: { state: EnquiryStat
 
 /** Seeds the service choice from ?service= (an id or slug); a different seed, or "send another", remounts a fresh form. */
 export function ProjectFormFromQuery() {
-  const service = useSearchParams().get("service");
-  const initialService = practices.find(p => p.id === service || p.slug === service)?.id;
+  const params = useSearchParams();
+  const service = params.get("service");
+  const bundle = bundles.find(b => b.id === params.get("bundle"));
+  // A bundle link opens the form with the bundle named in the brief and its lead craft ticked.
+  const initialService = bundle ? (bundle.audience === "developers" ? "spatial" : "interface") : practices.find(p => p.id === service || p.slug === service)?.id;
   const [round, setRound] = useState(0);
-  return <ProjectForm key={`${initialService || "unsure"}-${round}`} initialService={initialService} onRestart={() => setRound(r => r + 1)} />;
+  return <ProjectForm key={`${bundle?.id || initialService || "unsure"}-${round}`} initialService={initialService} initialOutcome={bundle ? `I am interested in ${bundle.name} (${bundle.price}). ` : ""} onRestart={() => setRound(r => r + 1)} />;
 }

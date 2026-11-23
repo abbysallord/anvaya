@@ -1,12 +1,24 @@
 import type { Metadata } from "next";
-import { Action, FinalCTA, PageHero } from "../components/cinema/Shared";
+import Link from "next/link";
+import { FinalCTA, PageHero } from "../components/cinema/Shared";
+import { posts } from "../lib/posts";
 
-export const metadata: Metadata = { title: "Blog", description: "Notes from the Anvaya studio on design, technology and space." };
+export const metadata: Metadata = { title: "News and notes", description: "Studio news and practical notes from Anvaya on walkthroughs, interiors and building for every screen.", alternates: { canonical: "/blog" } };
 
-// No articles are published yet; this page says so rather than showing placeholder posts.
+const fmt = (d: string) => new Date(d + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
 export default function BlogPage() {
   return <main id="main-content" tabIndex={-1}>
-    <PageHero title="Notes from the studio."><p>Practical articles on websites, apps, AI and 3D are on the way. The first posts are being written.</p><div className="not-found-actions"><Action href="/work">See our work</Action><Action href="/studio" text>About the studio</Action></div></PageHero>
+    <PageHero title="News and notes."><p>What we are building, and how.</p></PageHero>
+    <section className="section"><div className="shell">
+      <ul className="post-list">
+        {posts.map(p => <li key={p.slug}><Link href={`/blog/${p.slug}`} className="post-row">
+          <span className="post-meta"><span>{p.kind}</span><time dateTime={p.date}>{fmt(p.date)}</time></span>
+          <span className="post-title">{p.title}</span>
+          <span className="post-summary">{p.summary}</span>
+        </Link></li>)}
+      </ul>
+    </div></section>
     <FinalCTA />
   </main>;
 }

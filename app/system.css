@@ -1,0 +1,196 @@
+/* Anvaya design system, 15 November 2026.
+   Token vocabulary and scales adapted from Meta's Astryx design system (github.com/meta/astryx, MIT): semantic
+   colour names in the `--color-<property>-<role>` grammar, rem spacing steps, role-based radii, three shadow levels,
+   duration bands and four easing roles. The values are Anvaya's own palette, taken from the butterfly: white canvas, ice panels,
+   velvet-navy ink and morpho-blue accent (owner direction, 29 October 2026).
+   Loaded after cinema.css and light.css; the legacy token names are remapped below so every page inherits it. */
+
+/* Selectors here carry extra weight (:root:root, html …) so they win over cinema.css and light.css whatever order
+   the bundler emits the stylesheets in. */
+:root:root{
+  /* Colour: surfaces */
+  --color-background-body:#ffffff;
+  --color-background-surface:#ffffff;
+  --color-background-card:#ffffff;
+  --color-background-muted:#eef3fa;
+  --color-background-inverted:#0b1838;
+  --color-background-inverted-raised:#12234a;
+  /* Colour: content */
+  --color-text-primary:#0b1838;
+  --color-text-secondary:#3b4a66;
+  --color-text-tertiary:#56658a;
+  --color-text-disabled:#9aa0ae;
+  --color-on-dark:#f2f6fb;
+  --color-on-dark-secondary:rgba(242,246,251,.74);
+  /* Colour: intent */
+  --color-accent:#1e66d0;
+  --color-accent-muted:#e1e9f4;
+  --color-on-accent:#ffffff;
+  --color-text-accent:#1e66d0;
+  --color-accent-on-dark:#4fb8ff;
+  --color-success:#1f7a45;
+  --color-error:#b42318;
+  /* Colour: edges */
+  --color-border:rgba(11,24,56,.1);
+  --color-border-emphasized:rgba(11,24,56,.22);
+  --color-border-on-dark:rgba(255,255,255,.14);
+  --color-overlay:rgba(11,24,56,.5);
+
+  /* Spacing: N x 0.25rem */
+  --spacing-1:.25rem;--spacing-2:.5rem;--spacing-3:.75rem;--spacing-4:1rem;--spacing-5:1.25rem;--spacing-6:1.5rem;
+  --spacing-8:2rem;--spacing-10:2.5rem;--spacing-12:3rem;--spacing-16:4rem;--spacing-20:5rem;--spacing-24:6rem;--spacing-32:8rem;
+  --spacing-section:clamp(5rem,10vw,10rem);
+  --spacing-gutter:clamp(1.25rem,3.2vw,3rem);
+
+  /* Radius roles */
+  --radius-none:0px;--radius-inner:6px;--radius-element:12px;--radius-container:20px;--radius-page:28px;--radius-full:9999px;
+
+  /* Elevation */
+  --shadow-low:0 1px 1px rgba(11,24,56,.05),0 2px 8px rgba(11,24,56,.05);
+  --shadow-med:0 1px 2px rgba(11,24,56,.06),0 12px 28px -12px rgba(11,24,56,.18);
+  --shadow-high:0 2px 4px rgba(11,24,56,.06),0 32px 64px -28px rgba(11,24,56,.38);
+
+  /* Motion */
+  --duration-fast:175ms;--duration-medium:410ms;--duration-slow:975ms;
+  --ease-standard:cubic-bezier(.24,1,.4,1);--ease-entrance:cubic-bezier(.16,1,.3,1);--ease-move:cubic-bezier(.65,0,.2,1);--ease-exit:cubic-bezier(.3,0,.6,.6);
+
+  /* Type: families and fluid scale */
+  --font-display:var(--serif);--font-body:var(--sans);--font-code:var(--mono);
+  --text-display-1:clamp(3.25rem,8.6vw,9.25rem);
+  --text-display-2:clamp(2.6rem,6vw,6rem);
+  --text-display-3:clamp(2rem,3.6vw,3.5rem);
+  --text-heading-1:clamp(1.6rem,2.2vw,2.25rem);
+  --text-heading-2:1.375rem;
+  --text-large:clamp(1.0625rem,1.25vw,1.25rem);
+  --text-body:1rem;
+  --text-supporting:.875rem;
+  --text-label:.6875rem;
+
+  /* Layout */
+  --layout-max:96rem;
+  --header-height:4.5rem;
+  --dock-height:0px;
+
+  /* Legacy tokens (cinema.css / light.css) mapped onto the system */
+  --ink:var(--color-background-body);--ink-2:var(--color-background-muted);--ink-3:#e1e9f4;
+  --ivory:var(--color-text-primary);--ivory-2:var(--color-text-secondary);--ivory-3:var(--color-text-tertiary);
+  --hair:var(--color-border);--hair-2:var(--color-border-emphasized);
+  --accent:var(--color-accent);--accent-deep:var(--color-accent-on-dark);
+  --paper-ink:var(--color-on-dark);--paper-muted:var(--color-on-dark-secondary);--paper-hair:var(--color-border-on-dark);
+  --dark:var(--color-background-inverted);--radius:var(--radius-page);
+  --ease:var(--ease-move);--ease-out:var(--ease-entrance);
+  --pad:var(--spacing-gutter);
+  color-scheme:light;
+}
+@media (max-width:760px){:root:root{--dock-height:4.25rem;--header-height:3.75rem}}
+
+/* Inverted blocks re-declare the content tokens so shared components read correctly on ink. */
+html .on-ink,html .why-section,html .belief-section,html .final-cta,html .engagement-card.is-featured{
+  --color-text-primary:var(--color-on-dark);--color-text-secondary:var(--color-on-dark-secondary);--color-text-tertiary:rgba(242,246,251,.56);
+  --color-border:var(--color-border-on-dark);--color-border-emphasized:rgba(242,246,251,.32);--color-text-accent:var(--color-accent-on-dark);
+  --ink:var(--color-background-inverted);--ink-2:var(--color-background-inverted-raised);
+  --ivory:var(--color-on-dark);--ivory-2:var(--color-on-dark-secondary);--ivory-3:rgba(242,246,251,.56);
+  --hair:var(--color-border-on-dark);--hair-2:rgba(242,246,251,.32);--accent:var(--color-accent-on-dark);
+  background:var(--color-background-inverted);color:var(--color-on-dark);color-scheme:dark;
+}
+
+/* Base */
+html:root{scroll-padding-top:calc(var(--header-height) + 1rem);background:var(--color-background-body)}
+html body{background:var(--color-background-body);color:var(--color-text-primary);font-size:var(--text-body);line-height:1.6;letter-spacing:-.006em;padding-bottom:var(--dock-height)}
+::selection{background:var(--color-background-inverted);color:var(--color-on-dark)}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px;border-radius:var(--radius-inner)}
+h1,h2,h3{text-wrap:balance}
+p{text-wrap:pretty}
+html h1 em,html h2 em{color:inherit;font-style:italic;font-weight:300;opacity:.62}
+html .plan-card,html .practice-card,html .engagement-card{background:var(--color-background-card)}
+html .terms-grid>div,html .faq-item{border-color:var(--color-border)}
+
+/* Shared primitives */
+.shell{width:min(100% - 2*var(--spacing-gutter),var(--layout-max));margin-inline:auto}
+.label{font-family:var(--font-code);font-size:var(--text-label);letter-spacing:.09em;text-transform:uppercase;color:var(--color-text-tertiary)}
+.label b{font-weight:500;color:var(--color-text-accent)}
+.display{font-family:var(--font-display);font-weight:360;letter-spacing:-.04em;line-height:.96;font-variation-settings:"opsz" 144}
+.lede{font-size:var(--text-large);line-height:1.5;color:var(--color-text-secondary);max-width:46ch}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Buttons: one component, three variants */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.625rem;min-height:3rem;padding:.75rem 1.375rem;border-radius:var(--radius-full);border:1px solid transparent;font-size:.9375rem;font-weight:500;letter-spacing:-.005em;line-height:1;white-space:nowrap;cursor:pointer;transition:background var(--duration-medium) var(--ease-standard),color var(--duration-medium) var(--ease-standard),border-color var(--duration-medium) var(--ease-standard),box-shadow var(--duration-medium) var(--ease-standard)}
+.btn svg{width:1rem;height:1rem;flex:none;transition:transform var(--duration-medium) var(--ease-standard)}
+.btn:hover svg.arrow{animation:arrow-fly .55s var(--ease-move)}
+@keyframes arrow-fly{0%{transform:none;opacity:1}45%{transform:translate(110%,-110%);opacity:0}46%{transform:translate(-110%,110%);opacity:0}100%{transform:none;opacity:1}}
+.btn-primary{background:var(--color-text-primary);color:var(--color-background-body)}
+.btn-primary:hover{background:var(--color-accent);color:var(--color-on-accent)}
+.btn-light{background:var(--color-on-dark);color:#0b1838}
+.btn-light:hover{background:#fff;box-shadow:0 0 0 6px rgba(242,246,251,.16)}
+.btn-ghost{border-color:var(--color-border-emphasized);color:var(--color-text-primary)}
+.btn-ghost:hover{border-color:var(--color-text-primary);background:var(--color-text-primary);color:var(--color-background-body)}
+.btn-glass{border-color:rgba(255,255,255,.3);background:rgba(11,24,56,.28);color:#fff;-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3)}
+.btn-glass:hover{background:rgba(255,255,255,.94);color:#0b1838;border-color:transparent}
+.btn-wa{background:#128c4a;color:#fff}
+.btn-wa:hover{background:#0e7a40}
+.btn-block{width:100%}
+
+/* Entry states: set only when motion will run (html.anim is added before first paint and removed if the motion
+   layer never reports ready), so content is never hidden without JavaScript or under reduced motion. */
+html.anim [data-rise],html.anim [data-stagger]>*,html.anim main .label,html.anim main .lede{opacity:0}
+html.anim main .bundle .label{opacity:1}
+html.anim [data-split]{visibility:hidden}
+html.anim [data-clip]{clip-path:inset(0 0 100% 0)}
+.split-line{display:block;overflow:clip;padding-bottom:.08em;margin-bottom:-.08em}
+.bundle-grid{perspective:1400px}
+.site-footer .footer-word{overflow:clip}
+
+/* Scroll progress and route veil */
+.scroll-progress{position:fixed;inset:0 0 auto;height:2px;background:var(--color-accent);transform:scaleX(0);transform-origin:left;z-index:120;pointer-events:none}
+.route-veil{position:fixed;inset:0;z-index:110;display:grid;place-items:center;background:var(--color-background-body);opacity:0;visibility:hidden;pointer-events:none}
+.route-veil .wordmark{font-size:.8125rem;letter-spacing:.42em;color:var(--color-text-primary)}
+
+/* Header */
+.bar{position:fixed;inset:0 0 auto;z-index:100;height:var(--header-height);color:var(--color-text-primary);transition:transform var(--duration-medium) var(--ease-move),background var(--duration-medium) var(--ease-standard),color var(--duration-medium) var(--ease-standard),box-shadow var(--duration-medium) var(--ease-standard)}
+.bar-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:100%}
+.bar-brand{display:inline-flex;align-items:center;gap:.75rem;justify-self:start;min-height:2.75rem}
+.bar-brand .logo-mark{width:2rem;height:2rem;stroke:currentColor;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.bar-brand .logo-thread{stroke:var(--color-accent)}
+.bar-brand .logo-eye *{stroke:none}
+.bar-brand .wordmark{font-size:.75rem;font-weight:600;letter-spacing:.38em}
+.bar-brand .wordmark i{font-style:normal;color:var(--color-accent)}
+.bar-nav{display:flex;align-items:center;gap:.125rem;padding:.25rem;border:1px solid var(--color-border);border-radius:var(--radius-full);background:color-mix(in srgb,var(--color-background-surface) 78%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4)}
+.bar-link{position:relative;display:inline-flex;align-items:center;min-height:2.5rem;padding:0 1rem;border-radius:var(--radius-full);font-size:.875rem;font-weight:500;color:var(--color-text-secondary);transition:color var(--duration-fast),background var(--duration-fast)}
+.bar-link:hover{color:var(--color-text-primary);background:var(--color-background-muted)}
+.bar-link[aria-current="page"]{color:var(--color-background-body);background:var(--color-text-primary)}
+.bar-cta{justify-self:end;min-height:2.75rem;padding:.625rem 1.125rem}
+.bar.is-solid{background:color-mix(in srgb,var(--color-background-body) 86%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 1px 0 var(--color-border)}
+.bar.is-hidden{transform:translateY(-100%)}
+.bar:focus-within{transform:none}
+/* Over the home stage the bar reads light until the reader scrolls past it. */
+.bar.over-stage:not(.is-solid){color:#fff}
+.bar.over-stage:not(.is-solid) .bar-nav{border-color:rgba(255,255,255,.22);background:rgba(11,24,56,.26)}
+.bar.over-stage:not(.is-solid) .bar-link{color:rgba(255,255,255,.82)}
+.bar.over-stage:not(.is-solid) .bar-link:hover{color:#fff;background:rgba(255,255,255,.14)}
+.bar.over-stage:not(.is-solid) .bar-brand .logo-thread{stroke:#fff}
+.bar.over-stage:not(.is-solid) .bar-brand .logo-eye-core{fill:#0b1838}
+.bar.over-stage:not(.is-solid) .bar-brand .wordmark i{color:#fff}
+.bar.over-stage:not(.is-solid) .bar-cta{background:#fff;color:#0b1838}
+main{padding-top:0}
+html main>.page-hero:first-child,html main>.policy-hero:first-child{padding-top:calc(var(--header-height) + var(--spacing-16))}
+
+@media (max-width:760px){
+  .bar-inner{grid-template-columns:1fr auto}
+  .bar-nav{display:none}
+  .bar-cta{min-height:2.5rem;padding:.5rem 1rem;font-size:.8125rem}
+  .bar.is-hidden{transform:none}
+}
+
+/* Footer: keep the ink panel, drop the dawn band and the unconfigured icons. */
+html .site-footer{margin-top:var(--spacing-section)}
+html .site-footer .footer-dawn{display:none}
+html .site-footer .footer-panel{--f-dawn:0px;--f-night:var(--color-background-inverted);--f-blue:var(--color-accent-on-dark);--f-text:var(--color-on-dark)}
+html .site-footer .footer-word,html .site-footer .footer-word .split-char{background-image:linear-gradient(180deg,#a6e4ff 0%,#4fb8ff 26%,#2477e6 54%,#123f9c 76%,rgba(11,24,56,0) 97%)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+/* The original glass-fan hero keeps the palette it was drawn for (white canvas, velvet navy, morpho blue). */
+html .hero{--ink:#ffffff;--ink-2:#eef3fa;--ink-3:#e1e9f4;--ivory:#0b1838;--ivory-2:#3b4a66;--ivory-3:#56658a;--hair:rgba(11,24,56,.1);--hair-2:rgba(11,24,56,.2);--accent:#1e66d0;background:#fff;color:#0b1838}
+html .hero h1 em{opacity:1;font-weight:inherit}

@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { addOns, bundles, foundingOffer, plans, reviewRounds } from "../lib/site";
+
+const expressAddOn = (addOns.find(([k]) => k.startsWith("Express"))?.[1] ?? "+25%").replace("+", "");
 
 export const metadata: Metadata = {
   title: "Project terms",
@@ -21,33 +24,44 @@ export default function TermsPage() {
           <p>
             You send the floorplan (a PDF, CAD file or clear phone photo) and
             the finishes you plan to use. We confirm the rooms, views and
-            delivery date in writing before work starts. Stills take 5 working
-            days, a 360° tour 7 and Premium 10. Express delivery in about half
-            the time costs 25% more.
+            delivery date in writing before work starts. Each bundle and service
+            below states its delivery time. Express delivery in about half the
+            time costs {expressAddOn} more.
           </p>
           <p>
-            Two rounds of changes are included, each sent as one consolidated
-            list. They cover furniture, finishes, lighting and camera angles.
-            Moving walls or resizing rooms after you approve the layout is
-            quoted as a new floorplan. Further rounds are ₹1,999 each.
+            {reviewRounds.note} They cover furniture, finishes, lighting and
+            camera angles. Moving walls or resizing rooms after you approve the
+            layout is quoted as a new floorplan.
           </p>
         </section>
         <section>
           <h2>Pricing and payment</h2>
           <p>
-            Packages are priced per unit type, meaning one floorplan such as a
-            2BHK. Regular prices are Stills ₹14,999, 360° Tour ₹39,999 for a
-            2BHK or ₹54,999 for a 3BHK, and Premium from ₹89,999. Our first 3
-            builders get offer prices (₹9,999, ₹24,999, ₹34,999 and ₹59,999)
-            in return for a testimonial and permission to show the work. Each
-            further unit type in the same project is 35% off. Websites,
-            enquiry follow-up and video ads are quoted per project. Every
-            builder pays from the same published{" "}
-            <Link href="/pricing">price list</Link>.
+            Prices are in US dollars. The INR figures on our pricing pages are
+            conversions at a dated reference rate, shown for convenience; your
+            written quote fixes the amount and currency.
+          </p>
+          <p>Bundles are fixed prices for a finished result:</p>
+          <ul>
+            {bundles.map(b => <li key={b.id}><b>{b.name}</b>: {b.price}{"monthly" in b && b.monthly ? ` ${b.monthly}` : ""} · {b.unit} · {b.timeline}</li>)}
+          </ul>
+          <p>Individual 3D services, priced per unit type (one floorplan, such as a 2BHK):</p>
+          <ul>
+            {plans.map(pl => <li key={pl.id}><b>{pl.name}</b>: {pl.prices.map(([k, v]) => `${k} ${v}`).join(", ")} · {pl.timeline}</li>)}
+          </ul>
+          <p>Add-ons:</p>
+          <ul>
+            {addOns.map(([k, v]) => <li key={k}>{k}: {v}</li>)}
+          </ul>
+          <p>
+            {foundingOffer.detail} Websites, enquiry follow-up and video ads
+            outside a bundle are quoted per project. Every client pays from the
+            same published <Link href="/pricing">price list</Link>.
           </p>
           <p>
             We take a 50% advance to start and the balance before final files,
-            by UPI or bank transfer. Previews carry a watermark until payment
+            by international bank transfer (UPI or bank transfer in India).
+            Previews carry a watermark until payment
             is complete. Third-party charges, such as WhatsApp message fees,
             are listed and agreed up front. No GST is added at present.
           </p>
@@ -84,7 +98,39 @@ export default function TermsPage() {
           <p>
             For 14 days after delivery, report any broken link, rendering error
             or room that does not match the approved plan, and we fix it at no
-            cost. Tour hosting is included for 12 months, then ₹4,999 a year.
+            cost. Tour hosting is included for 12 months, then {addOns.find(([k]) => k.startsWith("Tour hosting"))?.[1]}.
+          </p>
+        </section>
+        <section>
+          <h2>International clients</h2>
+          <p>
+            We work remotely with clients worldwide, in English. Projects are
+            priced in US dollars and can be quoted in EUR, GBP, AED or INR for
+            the same scope, paid by international bank transfer. Any taxes or duties that apply
+            in your country are your responsibility unless your quote says
+            otherwise.
+          </p>
+        </section>
+        <section>
+          <h2>Third-party content and licences</h2>
+          <p>
+            Some furniture, decor, materials and fonts in our renders come from
+            licensed libraries: Creative Commons (CC BY 4.0 and CC0),
+            royalty-free marketplace licences and public-domain artwork. We use
+            each under its licence and keep the required credits on our{" "}
+            <Link href="/credits">licences and credits</Link> page. Your rights
+            to the delivered images, videos and tour are not affected. We do not
+            hand over third-party 3D model files, because their licences do not
+            allow it.
+          </p>
+        </section>
+        <section>
+          <h2>Studio samples and portfolio</h2>
+          <p>
+            The sample homes on this site are Anvaya&rsquo;s own designs, made
+            from floor plans to show our work. They are labelled as studio
+            samples. Client projects appear only with the client&rsquo;s written
+            permission, and only as delivered.
           </p>
         </section>
         <section>
